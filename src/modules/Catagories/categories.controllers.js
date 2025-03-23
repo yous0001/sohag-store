@@ -36,3 +36,8 @@ export const createCategroy=async(req, res,next)=>{
     res.status(201).json({message:"Category created successfully",category})
 
 }
+
+export const getAllCategories=async(req, res)=>{
+    const categories=await Category.find({})
+    res.status(200).json({message:"Categories fetched successfully",categories})
+}
