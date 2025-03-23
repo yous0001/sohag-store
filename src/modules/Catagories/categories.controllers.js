@@ -1,5 +1,5 @@
 import slugify from "slugify";
-import { uploadFile,generateUniqueString } from "../../utils/index.js";
+import { uploadFile,generateUniqueString, cloudinaryConfig } from "../../utils/index.js";
 import { Category } from "../../../DB/models/index.js";
 
 
@@ -62,4 +62,40 @@ export const getSpecificCategory=async(req, res, next)=>{
         return next(new Error("Category not found",{cause:404}));
     }
     res.status(200).json({message:"Category fetched successfully",category})
+}
+
+export const updateCategory=async(req, res, next)=>{
+    const {name}=req.body
+    const {_id}=req.params
+
+    const category = await Category.findById(_id)
+    if(!category){
+        return next(new Error("Category not found",{cause:404}));
+    }
+
+    if(name){
+        const slug=slugify(name,{
+            lower:true,
+            repacement:'_',
+            trim:true
+        })
+        //check if category already exists
+        const categoryExists=await Category.findOne({slug})
+        if(categoryExists){
+            return next(new Error("Category name already exists",{cause:409}));
+        }
+        category.name=name
+        category.slug=slug
+    }
+
+    if(req.file){
+        const {secure_url}=await cloudinaryConfig().uploader.upload(req.file.path,
+        {
+        public_id:category.Image.public_id,
+        overwrite:true
+        })
+        category.Image.secure_url=secure_url
+    }
+    await category.save()
+    res.status(200).json({message:"Category updated successfully",category})
 }

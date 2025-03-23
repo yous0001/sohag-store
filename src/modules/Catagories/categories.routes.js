@@ -9,5 +9,6 @@ const categoryRouter =Router()
 categoryRouter.post('/create',multerMiddleHost({extensions:allowedExtensions.image}).single('image'),expressAsyncHandler(categoryControllers.createCategroy))
 categoryRouter.get('/all',expressAsyncHandler(categoryControllers.getAllCategories))
 categoryRouter.get('/',expressAsyncHandler(categoryControllers.getSpecificCategory))
+categoryRouter.put('/update/:_id',multerMiddleHost({extensions:allowedExtensions.image}).single('image'),expressAsyncHandler(categoryControllers.updateCategory))
 
 export { categoryRouter } 
