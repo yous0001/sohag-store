@@ -15,16 +15,20 @@ const categorySchema=new Schema({
         trim:true,
         unique:true,
     },
-    Images:[{
+    Image:{
         secure_url:{type:String, required:true},
         public_id:{type:String, required:true} 
-    }],
+    },
     createdBy:{
         type:Schema.Types.ObjectId,
         ref:"User",
         required:false //only now until building user model
+    },
+    customID:{
+        type:String,
+        required:true,
+        unique:true
     }
-    
 },{timestamps:true})
 
 export const Category= mongoose.models.Category || model("Category", categorySchema) 
