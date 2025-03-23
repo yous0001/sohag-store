@@ -1,0 +1,1 @@
+export * from "./Catagories/categories.routes.js";
