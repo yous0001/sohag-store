@@ -14,6 +14,8 @@ app.use(express.json())
 
 //Routers
 app.use('/category', routers.categoryRouter)
+app.use('/sub-category', routers.subCategoryRouter)
+app.use('/brand', routers.brandsRouter)
 
 app.use(globalResponse)
 
