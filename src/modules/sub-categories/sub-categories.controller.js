@@ -1,6 +1,6 @@
 import { Category,SubCategory } from "../../../DB/models/index.js";
 import slugify from "slugify";
-import { uploadFile} from "../../utils/index.js";
+import { cloudinaryConfig, uploadFile} from "../../utils/index.js";
 import { nanoid } from "nanoid";
 
 export const createSubCategory=async(req,res,next) => {
@@ -50,4 +50,40 @@ export const getSpecificSubCategory=async(req,res) => {
 
     const subCategory=await SubCategory.findOne(queryFilter)
     res.status(200).json({message:"Sub category fetched successfully",subCategory})
+}
+
+export const updateSubCategory=async(req,res,next) => {
+    const {name}=req.body
+    const {id}=req.params
+
+    const subCategory=await SubCategory.findById(id)
+    if(!subCategory){
+        return next(new Error("Sub category not found",{cause:404}));
+    }
+    if(name){
+        const slug=slugify(name,{
+            lower:true,
+            replacement:'_',
+            trim:true
+        })
+        //check if sub category already exists
+        const subCategoryExists=await SubCategory.findOne({slug,categoryID:subCategory.categoryID})
+        if(subCategoryExists){
+            return next(new Error("Sub category already exists",{cause:409}));
+        }
+        subCategory.name=name
+        subCategory.slug=slug
+    }
+
+    if(req.file?.path){
+        const {secure_url}=await cloudinaryConfig().uploader.upload(req.file.path,
+                {
+                public_id:subCategory.Image.public_id,
+                overwrite:true
+                })
+        subCategory.Image.secure_url=secure_url
+    }
+    await subCategory.save()
+    res.status(200).json({message:"Sub category updated successfully",subCategory})
+    
 }

@@ -9,5 +9,6 @@ const subCategoryRouter=Router()
 
 subCategoryRouter.post('/create',multerMiddleHost({extensions:allowedExtensions.image}).single('image'),expressAsyncHandler(subCategoryController.createSubCategory))
 subCategoryRouter.get("/",expressAsyncHandler(subCategoryController.getSpecificSubCategory))
+subCategoryRouter.put("/:id",multerMiddleHost({extensions:allowedExtensions.image}).single('image'),expressAsyncHandler(subCategoryController.updateSubCategory))
 
 export {subCategoryRouter}
