@@ -76,7 +76,7 @@ export const updateCategory=async(req, res, next)=>{
     if(name){
         const slug=slugify(name,{
             lower:true,
-            repacement:'_',
+            replacement:'_',
             trim:true
         })
         //check if category already exists
@@ -88,7 +88,7 @@ export const updateCategory=async(req, res, next)=>{
         category.slug=slug
     }
 
-    if(req.file){
+    if(req.file?.path){
         const {secure_url}=await cloudinaryConfig().uploader.upload(req.file.path,
         {
         public_id:category.Image.public_id,
