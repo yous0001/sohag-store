@@ -11,7 +11,7 @@ export const createSubCategory=async(req,res,next) => {
     }
     const slug=slugify(name,{
         lower:true,
-        repacement:'_',
+        replacement:'_',
         trim:true
     })
     //check if sub category already exists
@@ -38,4 +38,16 @@ export const createSubCategory=async(req,res,next) => {
     const subCategory=await SubCategory.create(subCategoryObj)
 
     res.status(201).json({message:"Sub category created successfully",subCategory})
+}
+
+export const getSpecificSubCategory=async(req,res) => {
+    const {slug,id,name}=req.params
+
+    const queryFilter={}
+    if(slug)queryFilter.slug=slug
+    if(id)queryFilter._id=id
+    if(name)queryFilter.name=name
+
+    const subCategory=await SubCategory.findOne(queryFilter)
+    res.status(200).json({message:"Sub category fetched successfully",subCategory})
 }

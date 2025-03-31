@@ -8,6 +8,6 @@ import { multerMiddleHost } from "../../middlewares/multer.middleware.js";
 const subCategoryRouter=Router()
 
 subCategoryRouter.post('/create',multerMiddleHost({extensions:allowedExtensions.image}).single('image'),expressAsyncHandler(subCategoryController.createSubCategory))
-
+subCategoryRouter.get("/",expressAsyncHandler(subCategoryController.getSpecificSubCategory))
 
 export {subCategoryRouter}
