@@ -2,7 +2,7 @@ import { config } from "dotenv";
 import express from "express";
 import { DB_connection } from "./DB/connection.js";
 import * as routers from "./src/modules/index.js";
-import { globalResponse } from './src/middlewares/globalResponce.middleware.js';
+import { globalResponse } from './src/middlewares/global-responce.middleware.js';
 
 config()
 
