@@ -87,3 +87,29 @@ export const updateSubCategory=async(req,res,next) => {
     res.status(200).json({message:"Sub category updated successfully",subCategory})
     
 }
+
+export const deleteSubCategory=async(req,res,next) => {
+    const {id}=req.params
+    const subCategory=await SubCategory.findById(id).populate({path:"categoryID",select:"customID"})
+    if(!subCategory){
+        return next(new Error("Sub category not found",{cause:404}));
+    }
+    const folderPath=`${process.env.UPLOADS_FOLDER}/categories/${subCategory.categoryID.customID}/sub-categories/${subCategory.customID}`
+    
+    const { resources } = await cloudinaryConfig().api.resources({
+        type: "upload",
+        prefix: folderPath, // Get all images inside the folder
+        max_results: 100
+    });
+
+    for (const file of resources) {
+        await cloudinaryConfig().uploader.destroy(file.public_id);
+    }
+
+
+    await cloudinaryConfig().api.delete_folder(folderPath);
+
+    await SubCategory.findByIdAndDelete(id);
+
+    res.status(200).json({message:"Sub category deleted successfully"})
+}
